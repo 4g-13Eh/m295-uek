@@ -5,12 +5,30 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>safi</title>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const form = document.getElementById("delete-name-form");
+            form.addEventListener('submit', (event) => {
+                let formData = new FormData(form);
+                const data = Object.fromEntries(formData)
+                console.log(data);
+                fetch("http://localhost:3000/name", {method: "DELETE", body: data});
+                event.preventDefault();
+            })
+        })
+    </script>
 </head>
 <body>
     <form action="http://localhost:3000/name" method="POST">
         <label for="name">Name:</label>
         <input type="text" id="name" name="name" required>
         <button type="submit">Submit</button>
-      </form>      
+      </form>
+
+      <form id="delete-name-form" action="http://localhost:3000/name">
+        <label for="name-input">Zu löschender Name</label>
+        <input type="text" id="name" name="name" required />
+        <button type="submit">Löschen</button>
+      </form>        
 </body>
 </html>

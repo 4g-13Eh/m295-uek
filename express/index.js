@@ -27,8 +27,8 @@ app.get('/name', (request, respond) => {
   respond.send(randnam);
 })
 
-app.get('/html', (request, response) => {
-  response.sendFile(__dirname + "/views/index.html");
+app.get('/html', (request, respond) => {
+  respond.sendFile(__dirname + "/views/index.html");
 });
 
 app.get('/image', (request, respond)=>{
