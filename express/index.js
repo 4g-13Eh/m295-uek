@@ -1,4 +1,7 @@
-import express, { response } from "express";
+/*import express, { response } from "express";
+import 'path'*/
+const path = require("path");
+const express = require("express");
 
 const app = express()
 const port = 3000
@@ -7,6 +10,7 @@ app.get('/', (request, respond) => {
   respond.send('Hello World!');
 })
 
+// Request / Response Auftrag 1
 app.get('/now', (request, respond) => {
   respond.send(new Date().toISOString());
 })
@@ -22,12 +26,11 @@ app.get('/name', (request, respond) => {
 })
 
 app.get('/html', (request, response) => {
-  response.send(__dirname + "views/html.html");
+  response.sendFile(__dirname + "/views/index.html");
 });
 
-
 app.get('/image', (request, respond)=>{
-  respond.sendFile(__dirname + "public/Image.jpeg");
+  respond.sendFile(__dirname + "/public/Image.jpeg");
 })
 
 app.get('/teapot', (request, respond)=>{
@@ -44,13 +47,28 @@ app.get('/secret', (request, respond)=>{
 })
 
 app.get('/xml', (request, respond)=>{
-  respond.sendFile(__dirname + "views/xml.xml");
+  respond.sendFile(__dirname + "/views/index.xml");
 })
 
 app.get('/me', (request, respond)=>{
   var me = {"literally me":{"Vorname": "Shahin", "Nachname": "Amon", "Alter": "17", "Wohnort": "Zürich", "Augenfarbe": "Braun"}};
   respond.send(me);
 })
+
+// Request / Response Auftrag 2
+app.get('/now2', (request, respond) => {
+  const tz = request.query.tz; // tz = timezone, holt von der URL den Parameter tz
+  const time = new Date().toLocaleString("de-CH", {timeZone: tz}); // Zeitzone wird auf die Zeitzone des Parameters tz gesetzt
+  respond.send(time);
+})
+/*
+app.post('/name', (request, respond) => {
+  const names = [];
+  const name = prompt("Name eingeben");
+  names.push(name);
+  respond.send(names);
+})*/
+
 
 app.listen(port, () => {
   console.log(`Läuft auf Port ${port}`);
