@@ -76,7 +76,7 @@ app.get('/books', (request, response)=>{
 app.get('/books/:isbn', (request, response) =>{
     const isbn = request.params.isbn
     let foundbook = null
-    for (const book of books){
+    for (let book of books){
         if(book.isbn === Number(isbn)){
             foundbook = book;
             break;
@@ -99,15 +99,40 @@ app.post('/books', (request, response)=>{
 })
 
 app.put('/books/:isbn', (request, response)=>{
-    const isbn = request.params.isbn
+    const isbn = request.params.isbn;
+    let foundbook = null;
+    let updatedbook = {}; //Bräuchte es eigentlich nicht, da foundbook auch upgedaten werden kann, aber so ist es übersichtlicher
     for (let book of books){
         if (book.isbn === Number(isbn)){
-            for(const key in request.body){
-            book[key] = request.body[key];
+            foundbook = book;
+            break;
         }
     }
-    books.
+    if (foundbook){
+        updatedbook = foundbook; //Nicht nötig, aber übersichtlicher
+        for (const key in request.body){
+            updatedbook[key] = request.body[key];
+        }
+        response.send(updatedbook);
+    }
 })
+
+app.delete('/books/:isbn', (request, response)=>{
+    const isbn = request.params.isbn;
+    let foundbook = null;
+    for (let book of books){
+        if(book.isbn === Number(isbn)){
+            foundbook = book;
+            break;
+        }
+    }
+    if (foundbook){
+        const index = books.indexOf(foundbook);
+        books.splice(index, 1);
+        response.send(foundbook);
+    }
+})
+
 
 app.listen(port, () => {
     console.log(`Läuft auf Port ${port}`);
