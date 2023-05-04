@@ -29,6 +29,7 @@ router.get('/:id', (request, response) => {
     lend ? response.send(lend) : response.status(404).send("Nicht gefunden 💀");
 })
 
+
 router.post('/', (request, response) => {
     const { customer_id, isbn } = request.body;
     let currentState;
@@ -51,5 +52,9 @@ router.post('/', (request, response) => {
         response.status(409).send("Buch ist bereits verliehen");
     }
 })
+
+// grosse Kommentar: highlight + alt shift a
+
+/* router. */
 
 export default router;
