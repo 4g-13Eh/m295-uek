@@ -6,10 +6,13 @@ import session from "express-session";
 const app = express()
 const port = 3000
 
+const secretAdminCredentials = {
+    email: "a@gmail.com",
+    password: 123
+}
+
 app.use(express.urlencoded({ extended: true}));
 app.use(express.json());
-app.use('/lends', lendsRouter);
-app.use('/books', booksRouter);
 app.use(session({
     secret: 'supersecret',
     resave: false,
@@ -17,10 +20,21 @@ app.use(session({
     cookie: {}
 }))
 
-const secretAdminCredentials = {
-    email: "a@gmail.com",
-    password: 123
+const authenticate = (request, response, next) => {
+    if (request.session.email){
+        next();
+    }else{
+        response.status(401).json({ error: "Nicht eingeloggt!" });
+    }
 }
+
+app.use('/lends', authenticate, lendsRouter);
+app.use('/books', booksRouter);
+
+app.get('/*', (request, response) => {
+    const resource = request.originalUrl;
+    response.status(404).json({ error: `Fehler: Resource ${resource} nicht gefunden!` });
+})
 
 app.post('/login', (request, response) => {
     const { email, password } = request.body;
