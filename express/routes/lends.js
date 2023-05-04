@@ -19,20 +19,37 @@ let lends = [
     }
 ]
 
-router.get('/', (request, response)=>{
+router.get('/', (request, response) => {
     response.send(lends);
 })
 
-router.get('/:id', (request, response) =>{
+router.get('/:id', (request, response) => {
     const id = request.params.id;
-    const lend = lends.find((lend) => lend.id === id);
+    const lend = lends.find((lend) => lend.id === Number(id));
     lend ? response.send(lend) : response.status(404).send("Nicht gefunden 💀");
 })
 
-router.post('/', (request, response)=>{
-    let newlend = { id: uuidv4(), customer_id, isbn, borrowed_at: new Date(), returned_at: null};
-    const { customer_id, isbn } = request.params;
-    
+router.post('/', (request, response) => {
+    const { customer_id, isbn } = request.body;
+    let currentState;
+    let newlend;
+    if (isbn && customer_id) {
+        newlend = { id: uuidv4(), customer_id, isbn, borrowed_at: new Date(), returned_at: null };
+    }else{
+        response.status(422);
+    }
+    const borrowedbooks = lends.filter((lend) => lend.isbn === newlend.isbn && lend.returned_at == null);
+    if (borrowedbooks.length > 0){
+        currentState = false;
+    }else{
+        currentState = true;
+    }
+    if (currentState){
+        lends.push(newlend);
+        response.status(201).send(newlend);
+    }else{
+        response.status(409).send("Buch ist bereits verliehen");
+    }
 })
 
 export default router;
